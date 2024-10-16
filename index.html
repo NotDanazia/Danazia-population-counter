@@ -6,7 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f0f8ff;
+            background-color: #add8e6; /* Bleu légèrement plus foncé */
             padding: 20px;
         }
         #counter {
@@ -30,13 +30,13 @@
 <body>
     <h1>Danazia Population Counter</h1>
     <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
-    <div id="counter">147202000</div>
+    <div id="counter">150377148</div>
     <div id="localTime">Local time: --:--:--</div>
 
     <script>
-        const startValue = 147202000;
+        const startValue = 150377148;
         const annualGrowthRate = 0.02905; // 2.905%
-        const startDate = new Date("2024-10-15T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
+        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
 
         function calculateCurrentValue() {
             const now = new Date().getTime();
