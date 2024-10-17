@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>La Danazie Population Live</title>
+    <title>Danazia Population Live</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,33 +33,27 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>La Danazie Population Live</h1>
-    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de La Danazie">
-    <div id="counter">150,377,148</div>
+    <h1>Danazia Population Live</h1>
+    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
+    <div id="counter">147,042,356</div>
     <div id="localTime">Local time: --:--:--</div>
     <canvas id="myChart"></canvas>
     <script>
         const populationData = {
-            "1950": 19922402, "1951": 20320050, "1952": 20738451, "1953": 21177909, "1954": 21638851,
-            "1955": 22121756, "1956": 22627144, "1957": 23155559, "1958": 23707560, "1959": 24283743,
-            "1960": 24884729, "1961": 25511161, "1962": 26163708, "1963": 26843065, "1964": 27549952,
-            "1965": 28285113, "1966": 29049313, "1967": 29843350, "1968": 30668049, "1969": 31524270,
-            "1970": 32412899, "1971": 33334848, "1972": 34291054, "1973": 35282480, "1974": 36310120,
-            "1975": 37374994, "1976": 38478144, "1977": 39620668, "1978": 40803688, "1979": 42028351,
-            "1980": 43295829, "1981": 44607319, "1982": 45964052, "1983": 47367296, "1984": 48818349,
-            "1985": 50318538, "1986": 51869214, "1987": 53471758, "1988": 55127584, "1989": 56838139,
-            "1990": 58604903, "1991": 60429387, "1992": 62313135, "1993": 64257718, "1994": 66264744,
-            "1995": 68335853, "1996": 70472715, "1997": 72677031, "1998": 74950535, "1999": 77295002,
-            "2000": 79712249, "2001": 82204121, "2002": 84772512, "2003": 87419370, "2004": 90146682,
-            "2005": 92956464, "2006": 95850769, "2007": 98831684, "2008": 101901339, "2009": 105061905,
-            "2010": 108315593, "2011": 111664660, "2012": 115111399, "2013": 118658143, "2014": 122307254,
-            "2015": 126061132, "2016": 129922216, "2017": 133892984, "2018": 137975954, "2019": 142173690,
-            "2020": 145488803, "2021": 146476047, "2022": 146718328, "2023": 146881564, "2024": 147042356
+            "1950": 19922402, "1951": 20132584, "1952": 21078452, "1953": 22200191, "1954": 23324567,
+            "1955": 24432905, "1956": 25587413, "1957": 26643287, "1958": 27799574, "1959": 28934235,
+            "1960": 30045267, "1961": 32124876, "1962": 34041234, "1963": 36182875, "1964": 38096372,
+            "1965": 39372891, "1966": 41728493, "1967": 43183905, "1968": 44248163, "1969": 45693928,
+            "1970": 47037182, "1971": 47896243, "1972": 48693157, "1973": 49472384, "1974": 50239874,
+            "1975": 51003724, "1976": 51876903, "1977": 52698481, "1978": 53493129, "1979": 54289573,
+            "1980": 55062847, "1981": 56379018, "1982": 57682940, "1983": 58999472, "1984": 60184935,
+            "1985": 61563298, "1986": 62845761, "1987": 64109482, "1988": 65443187, "1989": 66782034,
+            "1990": 68123982, "1991": 69738561, "1992": 71489234, "1993": 73248371, "1994": 74837098
         };
 
         const labels = Object.keys(populationData);
-        const data = Object.values(populationData);
-
+        const data = Object.values(populationData).map(value => value || 0); // Initialize with 0 for "Now"
+        
         function formatNumberWithCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -71,9 +65,9 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Population de La Danazie',
+                        label: 'Danazia Population',
                         data: data,
-                        borderColor: 'rgba(46, 139, 87, 1)',
+                        borderColor: 'rgba(255, 0, 0, 1)', // Rouge
                         borderWidth: 2,
                         fill: false
                     }]
@@ -110,8 +104,19 @@
             }
 
             setInterval(updateLocalTime, 1000);
+
+            function updateRealTimePopulation() {
+                const now = new Date();
+                const daysElapsed = (now - new Date("2024-01-01T00:00:00-05:00").getTime()) / (1000 * 60 * 60 * 24);
+                const annualGrowthRate = 0.02905; // 2.905%
+                const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
+                const realTimeValue = Math.floor(147042356 * growthFactor); // Based on most recent population
+                myChart.data.datasets[0].data[myChart.data.datasets[0].data.length - 1] = realTimeValue;
+                myChart.update();
+            }
+
+            setInterval(updateRealTimePopulation, 1000);
         });
     </script>
 </body>
 </html>
-
