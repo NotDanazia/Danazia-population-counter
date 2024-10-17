@@ -25,14 +25,19 @@
             color: #555;
             margin-top: 20px;
         }
+        #myChart {
+            width: 80%;
+            margin: 20px auto;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Danazia Population Live</h1>
     <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
-
+    <canvas id="myChart"></canvas>
     <script>
         const startValue = 150377148;
         const annualGrowthRate = 0.02905; // 2.905%
@@ -56,7 +61,6 @@
             localStorage.setItem('counterValue', formattedValue);
             requestAnimationFrame(updateCounter);
         }
-
         function updateLocalTime() {
             const now = new Date();
             const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
@@ -75,8 +79,6 @@
         }
 
         initializeCounter();
-    </script>
-</body>
         const populationData = {
             "1950": 19922402, "1951": 20132584, "1952": 21078452, "1953": 22200191, "1954": 23324567,
             "1955": 24432905, "1956": 25587413, "1957": 26643287, "1958": 27799574, "1959": 28934235,
@@ -116,7 +118,6 @@
                         fill: false
                     }]
                 },
-
                 options: {
                     scales: {
                         x: { display: true },
@@ -139,23 +140,11 @@
                 }
             });
 
-            function updateLocalTime() {
-                const now = new Date();
-                const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
-                const hours = utc3Time.getHours().toString().padStart(2, '0');
-                const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
-                const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
-                document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
-            }
-
-            setInterval(updateLocalTime, 1000);
-
             function updateRealTimePopulation() {
                 const now = new Date();
-                const daysElapsed = (now - new Date("2024-01-01T00:00:00-05:00").getTime()) / (1000 * 60 * 60 * 24);
-                const annualGrowthRate = 0.02905; // 2.905%
+                const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
                 const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
-                const realTimeValue = Math.floor(146987354 * growthFactor); // Based on most recent population
+                const realTimeValue = Math.floor(startValue * growthFactor); // Based on most recent population
                 myChart.data.datasets[0].data[myChart.data.datasets[0].data.length - 1] = realTimeValue;
                 myChart.update();
             }
