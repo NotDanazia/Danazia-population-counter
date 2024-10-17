@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Danazia Population Live</title>
+    <title>La Danazie Population Live</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,56 +25,93 @@
             color: #555;
             margin-top: 20px;
         }
+        #myChart {
+            width: 80%;
+            margin: 20px auto;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Danazia Population Live</h1>
-    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
+    <h1>La Danazie Population Live</h1>
+    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de La Danazie">
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
-
+    <canvas id="myChart"></canvas>
     <script>
-        const startValue = 150377148;
-        const annualGrowthRate = 0.02905; // 2.905%
-        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
+        const populationData = {
+            "1950": 19922402, "1951": 20320050, "1952": 20738451, "1953": 21177909, "1954": 21638851,
+            "1955": 22121756, "1956": 22627144, "1957": 23155559, "1958": 23707560, "1959": 24283743,
+            "1960": 24884729, "1961": 25511161, "1962": 26163708, "1963": 26843065, "1964": 27549952,
+            "1965": 28285113, "1966": 29049313, "1967": 29843350, "1968": 30668049, "1969": 31524270,
+            "1970": 32412899, "1971": 33334848, "1972": 34291054, "1973": 35282480, "1974": 36310120,
+            "1975": 37374994, "1976": 38478144, "1977": 39620668, "1978": 40803688, "1979": 42028351,
+            "1980": 43295829, "1981": 44607319, "1982": 45964052, "1983": 47367296, "1984": 48818349,
+            "1985": 50318538, "1986": 51869214, "1987": 53471758, "1988": 55127584, "1989": 56838139,
+            "1990": 58604903, "1991": 60429387, "1992": 62313135, "1993": 64257718, "1994": 66264744,
+            "1995": 68335853, "1996": 70472715, "1997": 72677031, "1998": 74950535, "1999": 77295002,
+            "2000": 79712249, "2001": 82204121, "2002": 84772512, "2003": 87419370, "2004": 90146682,
+            "2005": 92956464, "2006": 95850769, "2007": 98831684, "2008": 101901339, "2009": 105061905,
+            "2010": 108315593, "2011": 111664660, "2012": 115111399, "2013": 118658143, "2014": 122307254,
+            "2015": 126061132, "2016": 129922216, "2017": 133892984, "2018": 137975954, "2019": 142173690,
+            "2020": 145488803, "2021": 146476047, "2022": 146718328, "2023": 146881564, "2024": 147042356
+        };
 
-        function calculateCurrentValue() {
-            const now = new Date().getTime();
-            const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
-            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
-            return Math.floor(startValue * growthFactor);
-        }
+        const labels = Object.keys(populationData);
+        const data = Object.values(populationData);
 
         function formatNumberWithCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
-        function updateCounter() {
-            const currentValue = calculateCurrentValue();
-            const formattedValue = formatNumberWithCommas(currentValue);
-            document.getElementById("counter").innerText = formattedValue;
-            localStorage.setItem('counterValue', formattedValue);
-            requestAnimationFrame(updateCounter);
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Population de La Danazie',
+                        data: data,
+                        borderColor: 'rgba(46, 139, 87, 1)',
+                        borderWidth: 2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: { display: true },
+                        y: { beginAtZero: false }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return formatNumberWithCommas(tooltipItem.raw);
+                                }
+                            },
+                            backgroundColor: 'white',
+                            titleColor: 'black',
+                            bodyColor: 'black',
+                            borderColor: 'rgba(0,0,0,0.1)',
+                            borderWidth: 1
+                        }
+                    }
+                }
+            });
 
-        function updateLocalTime() {
-            const now = new Date();
-            const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
-            const hours = utc3Time.getHours().toString().padStart(2, '0');
-            const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
-            const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
-            document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
-        }
-
-        function initializeCounter() {
-            if (localStorage.getItem('counterValue')) {
-                document.getElementById("counter").innerText = localStorage.getItem('counterValue');
+            function updateLocalTime() {
+                const now = new Date();
+                const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
+                const hours = utc3Time.getHours().toString().padStart(2, '0');
+                const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
+                const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
+                document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
             }
-            updateCounter();
-            setInterval(updateLocalTime, 1000);
-        }
 
-        initializeCounter();
+            setInterval(updateLocalTime, 1000);
+        });
     </script>
 </body>
 </html>
+
