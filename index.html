@@ -25,20 +25,58 @@
             color: #555;
             margin-top: 20px;
         }
-        #myChart {
-            width: 80%;
-            margin: 20px auto;
-        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Danazia Population Live</h1>
     <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
-    <div id="counter">147,042,356</div>
+    <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
-    <canvas id="myChart"></canvas>
+
     <script>
+        const startValue = 150377148;
+        const annualGrowthRate = 0.02905; // 2.905%
+        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
+
+        function calculateCurrentValue() {
+            const now = new Date().getTime();
+            const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
+            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
+            return Math.floor(startValue * growthFactor);
+        }
+
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateCounter() {
+            const currentValue = calculateCurrentValue();
+            const formattedValue = formatNumberWithCommas(currentValue);
+            document.getElementById("counter").innerText = formattedValue;
+            localStorage.setItem('counterValue', formattedValue);
+            requestAnimationFrame(updateCounter);
+        }
+
+        function updateLocalTime() {
+            const now = new Date();
+            const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
+            const hours = utc3Time.getHours().toString().padStart(2, '0');
+            const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
+            const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
+            document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
+        }
+
+        function initializeCounter() {
+            if (localStorage.getItem('counterValue')) {
+                document.getElementById("counter").innerText = localStorage.getItem('counterValue');
+            }
+            updateCounter();
+            setInterval(updateLocalTime, 1000);
+        }
+
+        initializeCounter();
+    </script>
+</body>
         const populationData = {
             "1950": 19922402, "1951": 20132584, "1952": 21078452, "1953": 22200191, "1954": 23324567,
             "1955": 24432905, "1956": 25587413, "1957": 26643287, "1958": 27799574, "1959": 28934235,
