@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Danazia Population Counter</title>
+    <title>Danazia Population Live</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,9 +28,9 @@
     </style>
 </head>
 <body>
-    <h1>Danazia Population Counter</h1>
+    <h1>Danazia Population Live</h1>
     <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
-    <div id="counter">150377148</div>
+    <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
 
     <script>
@@ -45,10 +45,15 @@
             return Math.floor(startValue * growthFactor);
         }
 
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function updateCounter() {
             const currentValue = calculateCurrentValue();
-            document.getElementById("counter").innerText = currentValue;
-            localStorage.setItem('counterValue', currentValue);
+            const formattedValue = formatNumberWithCommas(currentValue);
+            document.getElementById("counter").innerText = formattedValue;
+            localStorage.setItem('counterValue', formattedValue);
             requestAnimationFrame(updateCounter);
         }
 
