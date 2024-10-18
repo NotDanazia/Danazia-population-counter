@@ -29,6 +29,9 @@
             width: 80%;
             margin: 20px auto;
         }
+        #predictionForm {
+            margin-top: 20px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -38,6 +41,7 @@
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
     <canvas id="myChart"></canvas>
+    
     <script>
         const startValue = 150377148;
         const annualGrowthRate = 0.02905; // 2.905%
@@ -61,6 +65,7 @@
             localStorage.setItem('counterValue', formattedValue);
             requestAnimationFrame(updateCounter);
         }
+
         function updateLocalTime() {
             const now = new Date();
             const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
@@ -79,6 +84,26 @@
         }
 
         initializeCounter();
+        const populationPredictions = [];
+        
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const predictionInput = document.getElementById('predictionInput');
+            const predictionValue = parseInt(predictionInput.value, 10);
+
+            if (!isNaN(predictionValue)) {
+                populationPredictions.push(predictionValue);
+                updateAveragePrediction();
+                predictionInput.value = '';
+            }
+        });
+
+        function updateAveragePrediction() {
+            const sum = populationPredictions.reduce((a, b) => a + b, 0);
+            const average = sum / populationPredictions.length;
+            document.getElementById('averagePrediction').innerText = `Average prediction for 2025: ${formatNumberWithCommas(Math.round(average))}`;
+        }
+
         const populationData = {
             "1950": 19922402, "1951": 20132584, "1952": 21078452, "1953": 22200191, "1954": 23324567,
             "1955": 24432905, "1956": 25587413, "1957": 26643287, "1958": 27799574, "1959": 28934235,
@@ -151,6 +176,17 @@
 
             setInterval(updateRealTimePopulation, 1000);
         });
+
+        // Form for predictions
+        const formHTML = `
+            <form id="predictionForm">
+                <label for="predictionInput">What do you think the population will be in 2025?</label>
+                <input type="number" id="predictionInput" min="0" required>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="averagePrediction">Average prediction for 2025: --</div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', formHTML);
     </script>
 </body>
 </html>
