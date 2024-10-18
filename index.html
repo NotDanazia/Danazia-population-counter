@@ -6,7 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #add8e6;
+            background-color: #add8e6; /* Bleu légèrement plus foncé */
             padding: 20px;
         }
         #counter {
@@ -29,9 +29,6 @@
             width: 80%;
             margin: 20px auto;
         }
-        #predictionForm {
-            margin-top: 20px;
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -44,13 +41,13 @@
     
     <script>
         const startValue = 150377148;
-        const annualGrowthRate = 0.02905;
-        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
-        
+        const annualGrowthRate = 0.02905; // 2.905%
+        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
+
         function calculateCurrentValue() {
             const now = new Date().getTime();
             const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
-            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
+            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
             return Math.floor(startValue * growthFactor);
         }
 
@@ -84,26 +81,6 @@
         }
 
         initializeCounter();
-        const populationPredictions = [];
-        
-        document.getElementById('predictionForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const predictionInput = document.getElementById('predictionInput');
-            const predictionValue = parseInt(predictionInput.value, 10);
-
-            if (!isNaN(predictionValue)) {
-                populationPredictions.push(predictionValue);
-                updateAveragePrediction();
-                predictionInput.value = '';
-            }
-        });
-
-        function updateAveragePrediction() {
-            const sum = populationPredictions.reduce((a, b) => a + b, 0);
-            const average = sum / populationPredictions.length;
-            document.getElementById('averagePrediction').innerText = `Average prediction for 2025: ${formatNumberWithCommas(Math.round(average))}`;
-        }
-
         const populationData = {
             "1950": 19922402, "1951": 20132584, "1952": 21078452, "1953": 22200191, "1954": 23324567,
             "1955": 24432905, "1956": 25587413, "1957": 26643287, "1958": 27799574, "1959": 28934235,
@@ -123,7 +100,7 @@
             "Now": null // Placeholder for current value
         };
         const labels = Object.keys(populationData);
-        const data = Object.values(populationData).map(value => value || 0);
+        const data = Object.values(populationData).map(value => value || 0); // Initialize with 0 for "Now"
         
         function formatNumberWithCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -168,8 +145,8 @@
             function updateRealTimePopulation() {
                 const now = new Date();
                 const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
-                const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
-                const realTimeValue = Math.floor(startValue * growthFactor); // Based on most recent population
+                const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
+                const realTimeValue = Math.floor(startValue * growthFactor);
                 myChart.data.datasets[0].data[myChart.data.datasets[0].data.length - 1] = realTimeValue;
                 myChart.update();
             }
@@ -187,6 +164,26 @@
             <div id="averagePrediction">Average prediction for 2025: --</div>
         `;
         document.body.insertAdjacentHTML('beforeend', formHTML);
+
+        const populationPredictions = [];
+        
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const predictionInput = document.getElementById('predictionInput');
+            const predictionValue = parseInt(predictionInput.value, 10);
+
+            if (!isNaN(predictionValue)) {
+                populationPredictions.push(predictionValue);
+                updateAveragePrediction();
+                predictionInput.value = '';
+            }
+        });
+
+        function updateAveragePrediction() {
+            const sum = populationPredictions.reduce((a, b) => a + b, 0);
+            const average = sum / populationPredictions.length;
+            document.getElementById('averagePrediction').innerText = `Average prediction for 2025: ${formatNumberWithCommas(Math.round(average))}`;
+        }
     </script>
 </body>
 </html>
