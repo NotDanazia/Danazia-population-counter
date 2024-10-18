@@ -6,7 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #add8e6; /* Bleu légèrement plus foncé */
+            background-color: #add8e6;
             padding: 20px;
         }
         #counter {
@@ -44,13 +44,13 @@
     
     <script>
         const startValue = 150377148;
-        const annualGrowthRate = 0.02905; // 2.905%
-        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime(); // Date de début (aujourd'hui)
-
+        const annualGrowthRate = 0.02905;
+        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
+        
         function calculateCurrentValue() {
             const now = new Date().getTime();
             const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
-            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25); // Including leap years
+            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
             return Math.floor(startValue * growthFactor);
         }
 
@@ -123,7 +123,7 @@
             "Now": null // Placeholder for current value
         };
         const labels = Object.keys(populationData);
-        const data = Object.values(populationData).map(value => value || 0); // Initialize with 0 for "Now"
+        const data = Object.values(populationData).map(value => value || 0);
         
         function formatNumberWithCommas(number) {
             return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -180,7 +180,7 @@
         // Form for predictions
         const formHTML = `
             <form id="predictionForm">
-                <label for="predictionInput">What do you think the population will be in 2025?</label>
+                <label for="predictionInput">What will be the population by 2025?</label>
                 <input type="number" id="predictionInput" min="0" required>
                 <button type="submit">Submit</button>
             </form>
