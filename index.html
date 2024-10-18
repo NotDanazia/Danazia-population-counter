@@ -119,7 +119,7 @@
                         fill: false
                     }]
                 },
-                options: {
+                                options: {
                     scales: {
                         x: { display: true },
                         y: { beginAtZero: false }
@@ -156,8 +156,8 @@
         // Form for predictions
         const formHTML = `
             <form id="predictionForm">
-                <label for="predictionInput">What will be the population by 2025?</label>
-                <input type="number" id="predictionInput" min="0" required>
+                <label for="predictionInput">What will be the population by 2025? (150,000,000 to 200,000,000)</label>
+                <input type="number" id="predictionInput" min="150000000" max="200000000" required>
                 <button type="submit">Submit</button>
             </form>
             <div id="averagePrediction">Average prediction for 2025: --</div>
