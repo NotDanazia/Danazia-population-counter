@@ -6,7 +6,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #add8e6; /* Bleu légèrement plus foncé */
+            background-color: #add8d8; /* Bleu légèrement plus foncé */
             padding: 20px;
         }
         #counter {
@@ -38,7 +38,6 @@
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
     <canvas id="myChart"></canvas>
-    
     <script>
         const startValue = 150377148;
         const annualGrowthRate = 0.02905; // 2.905%
@@ -165,7 +164,7 @@
         `;
         document.body.insertAdjacentHTML('beforeend', formHTML);
 
-        const populationPredictions = [];
+        const populationPredictions = JSON.parse(localStorage.getItem('populationPredictions')) || [];
         
         document.getElementById('predictionForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -174,6 +173,7 @@
 
             if (!isNaN(predictionValue)) {
                 populationPredictions.push(predictionValue);
+                localStorage.setItem('populationPredictions', JSON.stringify(populationPredictions));
                 updateAveragePrediction();
                 predictionInput.value = '';
             }
@@ -184,6 +184,8 @@
             const average = sum / populationPredictions.length;
             document.getElementById('averagePrediction').innerText = `Average prediction for 2025: ${formatNumberWithCommas(Math.round(average))}`;
         }
+
+        updateAveragePrediction();
     </script>
 </body>
 </html>
