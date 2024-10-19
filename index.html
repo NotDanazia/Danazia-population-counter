@@ -289,7 +289,42 @@
             const sum = genderPredictions.reduce((a, b) => a + b, 0);
             const average = sum / genderPredictions.length;
             document.getElementById('averageGenderPrediction').innerText = `Average prediction for 2025: ${average.toFixed(1)}%`;
+        });
+
+        // Form for predictions
+        const formHTML = `
+            <form id="predictionForm">
+                <label for="predictionInput">What will be the population by 2025?</label>
+                <input type="number" id="predictionInput" min="150000000" max="200000000" required>
+                <button type="submit">Submit</button>
+            </form>
+            <div id="averagePrediction">Average prediction for 2025: --</div>
+            <br>
+        `;
+        document.body.insertAdjacentHTML('beforeend', formHTML);
+
+        const populationPredictions = JSON.parse(localStorage.getItem('populationPredictions')) || [];
+
+        document.getElementById('predictionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const predictionInput = document.getElementById('predictionInput');
+            const predictionValue = parseInt(predictionInput.value.replace(",", "."), 10);
+
+            if (!isNaN(predictionValue)) {
+                populationPredictions.push(predictionValue);
+                localStorage.setItem('populationPredictions', JSON.stringify(populationPredictions));
+                updateAveragePrediction();
+                predictionInput.value = '';
+            }
+        });
+
+        function updateAveragePrediction() {
+            const sum = populationPredictions.reduce((a, b) => a + b, 0);
+            const average = sum / populationPredictions.length;
+            document.getElementById('averagePrediction').innerText = `Average prediction for 2025: ${formatNumberWithCommas(Math.round(average))}`;
         }
+
+
 
         updateAverageGenderPrediction();
     </script>
