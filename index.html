@@ -122,14 +122,7 @@
                 options: {
                     scales: {
                         x: { display: true },
-                        y: { 
-                            beginAtZero: false,
-                            min: 40,
-                            max: 60,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
+                        y: { beginAtZero: false }
                     },
                     plugins: {
                         tooltip: {
@@ -214,7 +207,7 @@
         };
         const genderLabels = Object.keys(genderData);
         const menData = genderLabels.map(year => genderData[year].Men);
-        const womenData = genderLabels.map(year to genderData[year].Women);
+        const womenData = genderLabels.map(year => genderData[year].Women);
         const ctxGender = document.getElementById('myGenderChart').getContext('2d');
         new Chart(ctxGender, {
             type: 'line',
@@ -267,6 +260,7 @@
         });
         // Form for gender prediction
         const genderFormHTML = `
+            <br>
             <form id="genderPredictionForm">
                 <label for="genderPredictionInput">What will be the percentage of men in 2025?</label>
                 <input type="number" id="genderPredictionInput" min="0" max="100" step="0.1" required>
