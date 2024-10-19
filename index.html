@@ -51,10 +51,10 @@
             dy: 0,
             gravity: 0.5,
             jumpPower: -10,
-            onGround: false
+            onGround: false,
+            score: 0
         };
 
-        let score = 0;
         let bestScore = localStorage.getItem('bestScore') || 0;
 
         const keys = {
@@ -124,26 +124,24 @@
                     player.y = platform.y - player.height;
                     player.dy = 0;
                     player.onGround = true;
-                    score++;
-                    document.getElementById('score').innerText = `Score: ${score}`;
                 }
             });
 
             requestAnimationFrame(update);
         }
         function resetGame() {
-            if (score > bestScore) {
-                bestScore = score;
+            if (player.score > bestScore) {
+                bestScore = player.score;
                 localStorage.setItem('bestScore', bestScore);
             }
-            alert('Game Over! Your score: ' + score);
-            score = 0;
+            alert('Game Over! Your score: ' + player.score);
+            player.score = 0;
             platforms = [];
             generatePlatform();
             player.x = 50;
-            player.y = 300;
+            player.y = platforms[0].y - player.height; // Assure que le joueur apparaît sur la première plateforme
             player.dy = 0;
-            document.getElementById('score').innerText = `Score: ${score}`;
+            document.getElementById('score').innerText = `Score: ${player.score}`;
             document.getElementById('bestScore').innerText = `Best Score: ${bestScore}`;
             canvas.style.display = 'none';
             document.getElementById('startScreen').style.display = 'block';
@@ -152,7 +150,13 @@
         function startGame() {
             document.getElementById('startScreen').style.display = 'none';
             canvas.style.display = 'block';
-            generatePlatform();
+            platforms = [];
+            generatePlatform(); // Génère la première plateforme au démarrage du jeu
+            player.x = 50;
+            player.y = platforms[0].y - player.height; // Assure que le joueur apparaît sur la première plateforme
+            player.dy = 0;
+            player.score = 0;
+            document.getElementById('score').innerText = `Score: ${player.score}`;
             update();
         }
 
