@@ -294,5 +294,54 @@
         updateAverageGenderPrediction();
     </script>
 <canvas id="myGenderChart"></canvas>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                const ctxGender = document.getElementById('myGenderChart').getContext('2d');
+                new Chart(ctxGender, {
+                    type: 'line',
+                    data: {
+                        labels: genderLabels,
+                        datasets: [
+                            {
+                                label: 'Men',
+                                data: menData,
+                                borderColor: 'blue',
+                                borderWidth: 2,
+                                fill: false
+                            },
+                            {
+                                label: 'Women',
+                                data: womenData,
+                                borderColor: 'pink',
+                                borderWidth: 2,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            x: { display: true },
+                            y: { beginAtZero: true }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return tooltipItem.raw.toFixed(1) + '%';
+                                    }
+                                },
+                                backgroundColor: 'white',
+                                titleColor: 'black',
+                                bodyColor: 'black',
+                                borderColor: 'rgba(0,0,0,0.1)',
+                                borderWidth: 1
+                            }
+                        }
+                    }
+                });
+            }, 0);
+        });
+    </script>
 </body>
 </html>
