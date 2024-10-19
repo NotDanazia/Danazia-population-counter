@@ -39,7 +39,7 @@
         const playerImg = new Image();
         playerImg.src = 'https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000013-dc858dc859/drapeau%20Danazie%20mini.webp?ph=3ba8d8ca06';
 
-        const jumpSound = new Audio('URL_DE_VOTRE_SON_DE_SAUT'); // Remplacez cette URL par le chemin de votre fichier audio
+        const jumpSound = new Audio('https://www.myinstants.com/media/sounds/jump-sound-effect.mp3'); // Son de saut
 
         const player = {
             x: 50,
@@ -124,6 +124,11 @@
                     player.y = platform.y - player.height;
                     player.dy = 0;
                     player.onGround = true;
+                    if (platform.x + platform.width < player.x + player.dx) {
+                        player.score++;
+                        document.getElementById('score').innerText = `Score: ${player.score}`;
+                        generatePlatform();
+                    }
                 }
             });
 
@@ -137,9 +142,8 @@
             alert('Game Over! Your score: ' + player.score);
             player.score = 0;
             platforms = [];
-            generatePlatform();
             player.x = 50;
-            player.y = platforms[0].y - player.height; // Assure que le joueur apparaît sur la première plateforme
+            player.y = 300; // Reset the player's position
             player.dy = 0;
             document.getElementById('score').innerText = `Score: ${player.score}`;
             document.getElementById('bestScore').innerText = `Best Score: ${bestScore}`;
@@ -151,9 +155,11 @@
             document.getElementById('startScreen').style.display = 'none';
             canvas.style.display = 'block';
             platforms = [];
-            generatePlatform(); // Génère la première plateforme au démarrage du jeu
+            for (let i = 0; i < 5; i++) {
+                generatePlatform(); // Generate initial platforms
+            }
             player.x = 50;
-            player.y = platforms[0].y - player.height; // Assure que le joueur apparaît sur la première plateforme
+            player.y = platforms[0].y - player.height; // Ensure the player appears on the first platform
             player.dy = 0;
             player.score = 0;
             document.getElementById('score').innerText = `Score: ${player.score}`;
