@@ -8,16 +8,38 @@
             margin: 0 auto;
             background: #87CEEB; /* Ciel bleu */
         }
+        #startScreen {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #startButton {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        #score {
+            font-size: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
+    <div id="startScreen">
+        <h1>Jeu de Plateforme</h1>
+        <button id="startButton">Play</button>
+        <div id="bestScore">Best Score: 0</div>
+    </div>
+    <div id="score">Score: 0</div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        canvas.style.display = 'none';
 
         const playerImg = new Image();
         playerImg.src = 'https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000013-dc858dc859/drapeau%20Danazie%20mini.webp?ph=3ba8d8ca06';
+
+        const jumpSound = new Audio('URL_DE_VOTRE_SON_DE_SAUT'); // Remplacez cette URL par le chemin de votre fichier audio
 
         const player = {
             x: 50,
@@ -32,17 +54,24 @@
             onGround: false
         };
 
+        let score = 0;
+        let bestScore = localStorage.getItem('bestScore') || 0;
+
         const keys = {
             right: false,
             left: false,
             up: false
         };
 
-        const platforms = [
-            { x: 100, y: 500, width: 200, height: 10, color: 'green' },
-            { x: 400, y: 400, width: 200, height: 10, color: 'green' },
-            { x: 300, y: 300, width: 200, height: 10, color: 'green' }
-        ];
+        let platforms = [];
+
+        function generatePlatform() {
+            const width = 200;
+            const height = 10;
+            const x = platforms.length > 0 ? platforms[platforms.length - 1].x + 300 : 100;
+            const y = Math.random() * (canvas.height - 200) + 100;
+            platforms.push({ x, y, width, height, color: 'green' });
+        }
         function drawPlayer() {
             ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
         }
@@ -74,6 +103,7 @@
             if (keys.up && player.onGround) {
                 player.dy = player.jumpPower;
                 player.onGround = false;
+                jumpSound.play(); // Joue le son de saut
             }
 
             player.dy += player.gravity;
@@ -81,9 +111,7 @@
             player.y += player.dy;
 
             if (player.y + player.height > canvas.height) {
-                player.y = canvas.height - player.height;
-                player.dy = 0;
-                player.onGround = true;
+                resetGame();
             }
 
             platforms.forEach(platform => {
@@ -96,13 +124,40 @@
                     player.y = platform.y - player.height;
                     player.dy = 0;
                     player.onGround = true;
+                    score++;
+                    document.getElementById('score').innerText = `Score: ${score}`;
                 }
             });
 
             requestAnimationFrame(update);
         }
+        function resetGame() {
+            if (score > bestScore) {
+                bestScore = score;
+                localStorage.setItem('bestScore', bestScore);
+            }
+            alert('Game Over! Your score: ' + score);
+            score = 0;
+            platforms = [];
+            generatePlatform();
+            player.x = 50;
+            player.y = 300;
+            player.dy = 0;
+            document.getElementById('score').innerText = `Score: ${score}`;
+            document.getElementById('bestScore').innerText = `Best Score: ${bestScore}`;
+            canvas.style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+        }
 
-        update();
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            canvas.style.display = 'block';
+            generatePlatform();
+            update();
+        }
+
+        document.getElementById('startButton').addEventListener('click', startGame);
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') {
                 keys.right = true;
@@ -122,6 +177,9 @@
                 keys.up = false;
             }
         });
+
+        document.getElementById('bestScore').innerText = `Best Score: ${bestScore}`;
     </script>
+<canvas id="myGenderChart"></canvas>
 </body>
 </html>
