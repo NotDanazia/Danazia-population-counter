@@ -16,12 +16,14 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        const playerImg = new Image();
+        playerImg.src = 'https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000013-dc858dc859/drapeau%20Danazie%20mini.webp?ph=3ba8d8ca06';
+
         const player = {
             x: 50,
             y: 300,
             width: 50,
             height: 50,
-            color: 'red',
             speed: 5,
             dx: 0,
             dy: 0,
@@ -42,8 +44,7 @@
             { x: 300, y: 300, width: 200, height: 10, color: 'green' }
         ];
         function drawPlayer() {
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
         }
 
         function drawPlatforms() {
