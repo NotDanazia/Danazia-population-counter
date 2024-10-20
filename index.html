@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat en Ligne</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        #accueil, #formulaireConnexion, #formulaireInscription {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="accueil">
+        <h1>Bienvenue sur Chat en Ligne</h1>
+        <button id="connexion">Connexion</button>
+        <button id="inscription">Inscription</button>
+    </div>
+
+    <div id="formulaireConnexion" style="display: none;">
+        <h2>Connexion</h2>
+        <input type="text" id="connexionNom" placeholder="Nom d'utilisateur">
+        <input type="password" id="connexionMotDePasse" placeholder="Mot de passe">
+        <button id="boutonConnexion">Se connecter</button>
+        <p id="erreurConnexion" style="color: red;"></p>
+    </div>
+
+    <div id="formulaireInscription" style="display: none;">
+        <h2>Inscription</h2>
+        <input type="text" id="inscriptionNom" placeholder="Nom d'utilisateur">
+        <input type="password" id="inscriptionMotDePasse" placeholder="Mot de passe">
+        <button id="boutonInscription">S'inscrire</button>
+        <p id="erreurInscription" style="color: red;"></p>
+    </div>
+</body>
+</html>
+    <script>
+        document.getElementById('connexion').addEventListener('click', () => {
+            document.getElementById('accueil').style.display = 'none';
+            document.getElementById('formulaireConnexion').style.display = 'block';
+        });
+
+        document.getElementById('inscription').addEventListener('click', () => {
+            document.getElementById('accueil').style.display = 'none';
+            document.getElementById('formulaireInscription').style.display = 'block';
+        });
+
+        document.getElementById('boutonConnexion').addEventListener('click', async () => {
+            const nom = document.getElementById('connexionNom').value;
+            const motDePasse = document.getElementById('connexionMotDePasse').value;
+
+            const response = await fetch('/api/connexion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nom, motDePasse })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = '/chat.html?userId=' + result.userId;
+            } else {
+                document.getElementById('erreurConnexion').innerText = result.message;
+            }
+        });
+
+        document.getElementById('boutonInscription').addEventListener('click', async () => {
+            const nom = document.getElementById('inscriptionNom').value;
+            const motDePasse = document.getElementById('inscriptionMotDePasse').value;
+
+            if (motDePasse.length < 8 || motDePasse.length > 20) {
+                document.getElementById('erreurInscription').innerText = 'Le mot de passe doit comporter entre 8 et 20 caractères.';
+                return;
+            }
+
+            const response = await fetch('/api/inscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nom, motDePasse })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                window.location.href = '/chat.html?userId=' + result.userId;
+            } else {
+                document.getElementById('erreurInscription').innerText = result.message;
+            }
+        });
+    </script>
+</body>
+</html>
