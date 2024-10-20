@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat en Ligne</title>
+    <title>Chat en Ligne avec IA</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,6 +68,12 @@
             background-color: #e3ffe7;
             text-align: right;
         }
+
+        .message.bot {
+            background-color: #fff3e7;
+            text-align: center;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -92,28 +98,45 @@
             document.getElementById('accueil').style.display = 'none';
             document.getElementById('chatBox').style.display = 'block';
             document.getElementById('chatTitle').innerText = `Chat - ${user.charAt(0).toUpperCase() + user.slice(1)}`;
+            loadMessages();
         }
 
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value;
             if (message.trim() !== '') {
-                const chatMessages = document.getElementById('chatMessages');
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message', currentUser);
-                messageDiv.innerText = message;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                saveMessage(currentUser, message);
+                displayMessage(currentUser, message);
                 messageInput.value = '';
-                // Simulate message from the other user for demonstration purposes
+                // Simulate bot response for demonstration purposes
                 setTimeout(() => {
-                    const replyDiv = document.createElement('div');
-                    replyDiv.classList.add('message', currentUser === 'david' ? 'mickael' : 'david');
-                    replyDiv.innerText = currentUser === 'david' ? 'Réponse de Mickaël' : 'Réponse de David';
-                    chatMessages.appendChild(replyDiv);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    const botMessage = `Bot: Je réfléchis...`;
+                    saveMessage('bot', botMessage);
+                    displayMessage('bot', botMessage);
                 }, 1000);
             }
+        }
+
+        function displayMessage(user, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', user);
+            messageDiv.innerText = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function saveMessage(user, message) {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push({ user, message });
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.forEach(({ user, message }) => {
+                displayMessage(user, message);
+            });
         }
     </script>
 </body>
