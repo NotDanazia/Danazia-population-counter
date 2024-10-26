@@ -205,101 +205,62 @@
             "2015": {"Men": 52.3, "Women": 47.7}, "2016": {"Men": 52.5, "Women": 47.5}, "2017": {"Men": 52.7, "Women": 47.3}, "2018": {"Men": 52.9, "Women": 47.1}, "2019": {"Men": 53.0, "Women": 47.0},
             "2020": {"Men": 52.5, "Women": 47.5}, "2021": {"Men": 52.7, "Women": 47.3}, "2022": {"Men": 52.8, "Women": 47.2}, "2023": {"Men": 52.9, "Women": 47.1}, "2024": {"Men": 52.0, "Women": 48.0}
         };
-
-        // Initialize or retrieve predictions from localStorage
-        const genderPredictions = JSON.parse(localStorage.getItem('genderPredictions')) || [];
-
-        // Function to update the average prediction display
-        function updateAverageGenderPrediction() {
-            const totalPredictions = genderPredictions.length;
-            if (totalPredictions === 0) return;
-
-            const totalMen = genderPredictions.reduce((sum, prediction) => sum + prediction.men, 0);
-            const totalWomen = genderPredictions.reduce((sum, prediction) => sum + prediction.women, 0);
-            const averageMen = (totalMen / totalPredictions).toFixed(2);
-            const averageWomen = (totalWomen / totalPredictions).toFixed(2);
-
-            document.getElementById('averageMenPrediction').textContent = averageMen;
-            document.getElementById('averageWomenPrediction').textContent = averageWomen;
-        }
-
-        // Event listener for the form submission
-        document.getElementById('genderForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const menPercentage = parseFloat(document.getElementById('menPercentage').value);
-            const womenPercentage = parseFloat(document.getElementById('womenPercentage').value);
-
-            if (menPercentage + womenPercentage !== 100) {
-                alert("The sum of Men and Women percentages must equal 100%");
-                return;
-            }
-
-            genderPredictions.push({ men: menPercentage, women: womenPercentage });
-            localStorage.setItem('genderPredictions', JSON.stringify(genderPredictions));
-            updateAverageGenderPrediction();
-        });
-
-        // Call the function initially to display the stored average
-        updateAverageGenderPrediction();
-
-        // Initializing the Chart.js line chart for gender data
-        document.addEventListener("DOMContentLoaded", () => {
-            const genderLabels = Object.keys(genderData);
-            const menData = genderLabels.map(year => genderData[year].Men);
-            const womenData = genderLabels.map(year => genderData[year].Women);
-
-            const ctxGender = document.getElementById('myGenderChart').getContext('2d');
-            new Chart(ctxGender, {
-                type: 'line',
-                data: {
-                    labels: genderLabels,
-                    datasets: [
-                        {
-                            label: 'Men',
-                            data: menData,
-                            borderColor: 'blue',
-                            borderWidth: 2,
-                            fill: false
-                        },
-                        {
-                            label: 'Women',
-                            data: womenData,
-                            borderColor: 'pink',
-                            borderWidth: 2,
-                            fill: false
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        x: { display: true },
-                        y: {
-                            beginAtZero: false,
-                            min: 40,
-                            max: 60,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
+        const genderLabels = Object.keys(genderData);
+        const menData = genderLabels.map(year => genderData[year].Men);
+        const womenData = genderLabels.map(year => genderData[year].Women);
+        const ctxGender = document.getElementById('myGenderChart').getContext('2d');
+        new Chart(ctxGender, {
+            type: 'line',
+            data: {
+                labels: genderLabels,
+                datasets: [
+                    {
+                        label: 'Men',
+                        data: menData,
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        fill: false
                     },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return tooltipItem.raw.toFixed(1) + '%';
-                                }
-                            },
-                            backgroundColor: 'white',
-                            titleColor: 'black',
-                            bodyColor: 'black',
-                            borderColor: 'rgba(0,0,0,0.1)',
-                            borderWidth: 1
-                        }
+                    {
+                        label: 'Women',
+                        data: womenData,
+                        borderColor: 'pink',
+                        borderWidth: 2,
+                        fill: false
                     }
+                ]
+            },
+options: {
+    scales: {
+        x: { display: true },
+        y: { 
+            beginAtZero: false, // Cette option peut être retirée ou laissée sur false
+            min: 40, // Valeur minimale
+            max: 60, // Valeur maximale
+            ticks: {
+                stepSize: 1 // Intervalle de graduation
+            }
+        }
+    },
+    plugins: {
+        tooltip: {
+            callbacks: {
+                label: function(tooltipItem) {
+                    return tooltipItem.raw.toFixed(1) + '%'; // Format du tooltip
                 }
-            });
+            },
+            backgroundColor: 'white',
+            titleColor: 'black',
+            bodyColor: 'black',
+            borderColor: 'rgba(0,0,0,0.1)',
+            borderWidth: 1
+        }
+    }
+}
+
+                });
+            }, 0);
         });
     </script>
-
 </body>
 </html>
