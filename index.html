@@ -35,14 +35,20 @@
 
     <script>
         const startValue = 150377148;
-        const annualGrowthRate = 0.02; // 2 % de croissance
+        const birthRate = 0.03; // 3 % par an
+        const deathRate = 0.01; // 1 % par an
         const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
         function calculateCurrentValue() {
             const now = new Date().getTime();
-            const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
-            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
-            return Math.floor(startValue * growthFactor);
+            const elapsedYears = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+
+            // Croissance séparée en naissances et décès
+            const births = startValue * Math.pow(1 + birthRate, elapsedYears);
+            const deaths = startValue * Math.pow(1 + deathRate, elapsedYears);
+            const currentValue = births - deaths;
+
+            return Math.floor(currentValue);
         }
 
         function formatNumberWithCommas(number) {
