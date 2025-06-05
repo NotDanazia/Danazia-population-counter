@@ -34,32 +34,23 @@
     <div id="localTime">Local time: --:--:--</div>
 
     <script>
-        const startValue = 150377148;
-        const birthRate = 0.03; // 3 % par an
-        const deathRate = 0.01; // 1 % par an
-        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
+        let population = 150377148;
+        const annualGrowthRate = 0.02;
+        const growthPerSecond = annualGrowthRate / (365.25 * 24 * 60 * 60);
+        const startTime = new Date().getTime();
 
-        function calculateCurrentValue() {
+        function updatePopulation() {
             const now = new Date().getTime();
-            const elapsedYears = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+            const secondsElapsed = (now - startTime) / 1000;
 
-            // Croissance séparée en naissances et décès
-            const births = startValue * Math.pow(1 + birthRate, elapsedYears);
-            const deaths = startValue * Math.pow(1 + deathRate, elapsedYears);
-            const currentValue = births - deaths;
+            // Croissance de base
+            population = 150377148 * Math.pow((1 + annualGrowthRate), secondsElapsed / (365.25 * 24 * 60 * 60));
 
-            return Math.floor(currentValue);
-        }
+            // Fluctuation aléatoire : -1, 0, +1 ou +2
+            const fluctuation = [-1, 0, 1, 2][Math.floor(Math.random() * 4)];
+            population += fluctuation;
 
-        function formatNumberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
-        function updateCounter() {
-            const currentValue = calculateCurrentValue();
-            const formattedValue = formatNumberWithCommas(currentValue);
-            document.getElementById("counter").innerText = formattedValue;
-            requestAnimationFrame(updateCounter);
+            document.getElementById("counter").innerText = formatNumberWithCommas(Math.floor(population));
         }
 
         function updateLocalTime() {
@@ -71,12 +62,16 @@
             document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
         }
 
-        function initializeCounter() {
-            updateCounter();
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function initialize() {
+            setInterval(updatePopulation, 1000); // mise à jour chaque seconde
             setInterval(updateLocalTime, 1000);
         }
 
-        initializeCounter();
+        initialize();
     </script>
 </body>
 </html>
