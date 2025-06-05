@@ -35,22 +35,16 @@
 
     <script>
         let population = 150377148;
-        const annualGrowthRate = 0.02;
-        const growthPerSecond = annualGrowthRate / (365.25 * 24 * 60 * 60);
-        const startTime = new Date().getTime();
+
+        function getRandomPopulationChange() {
+            const choices = [-1, 1, 2];
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
 
         function updatePopulation() {
-            const now = new Date().getTime();
-            const secondsElapsed = (now - startTime) / 1000;
-
-            // Croissance de base
-            population = 150377148 * Math.pow((1 + annualGrowthRate), secondsElapsed / (365.25 * 24 * 60 * 60));
-
-            // Fluctuation aléatoire : -1, 0, +1 ou +2
-            const fluctuation = [-1, 0, 1, 2][Math.floor(Math.random() * 4)];
-            population += fluctuation;
-
-            document.getElementById("counter").innerText = formatNumberWithCommas(Math.floor(population));
+            const change = getRandomPopulationChange();
+            population += change;
+            document.getElementById("counter").innerText = population.toLocaleString();
         }
 
         function updateLocalTime() {
@@ -62,13 +56,9 @@
             document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
         }
 
-        function formatNumberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-
         function initialize() {
-            setInterval(updatePopulation, 1000); // mise à jour chaque seconde
-            setInterval(updateLocalTime, 1000);
+            setInterval(updatePopulation, 6995); // toutes les 6995 ms
+            setInterval(updateLocalTime, 1000); // mettre à jour l'heure chaque seconde
         }
 
         initialize();
