@@ -34,17 +34,26 @@
     <div id="localTime">Local time: --:--:--</div>
 
     <script>
-        let population = 150377148;
+        const startValue = 150377148;
+        const annualGrowthRate = 0.02; // 2 % de croissance
+        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
-        function getRandomPopulationChange() {
-            const choices = [-1, 1, 2];
-            return choices[Math.floor(Math.random() * choices.length)];
+        function calculateCurrentValue() {
+            const now = new Date().getTime();
+            const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
+            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
+            return Math.floor(startValue * growthFactor);
         }
 
-        function updatePopulation() {
-            const change = getRandomPopulationChange();
-            population += change;
-            document.getElementById("counter").innerText = population.toLocaleString();
+        function formatNumberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateCounter() {
+            const currentValue = calculateCurrentValue();
+            const formattedValue = formatNumberWithCommas(currentValue);
+            document.getElementById("counter").innerText = formattedValue;
+            requestAnimationFrame(updateCounter);
         }
 
         function updateLocalTime() {
@@ -56,12 +65,12 @@
             document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
         }
 
-        function initialize() {
-            setInterval(updatePopulation, 6995); // toutes les 6995 ms
-            setInterval(updateLocalTime, 1000); // mettre à jour l'heure chaque seconde
+        function initializeCounter() {
+            updateCounter();
+            setInterval(updateLocalTime, 1000);
         }
 
-        initialize();
+        initializeCounter();
     </script>
 </body>
 </html>
