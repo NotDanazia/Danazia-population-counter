@@ -9,17 +9,21 @@
             background-color: #add8e6;
             padding: 20px;
         }
-        #counter {
-            font-size: 2em;
+        h1 {
             color: #2e8b57;
         }
-        h1 {
+        #counter {
+            font-size: 2em;
             color: #2e8b57;
         }
         #localTime {
             font-size: 1.2em;
             color: #555;
-            margin-top: 15px;
+            margin-top: 10px;
+        }
+        img {
+            max-width: 200px;
+            margin: 20px auto;
         }
     </style>
 </head>
@@ -27,20 +31,23 @@
 
 <h1>Danazia Population Live</h1>
 
+<img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06"
+     alt="Drapeau de Danazia">
+
 <div id="counter">151,926,000</div>
 <div id="localTime">Local time: --:--:--</div>
 
 <script>
 
-// 📅 base EXACTE
+// 📅 base fixe (zéro reset visuel possible)
 const startPopulation = 151926000;
 const startDate = new Date("2026-01-01T00:00:00").getTime();
 
 // ⏱️ tes intervalles EXACTS
-const birthInterval = 13.1877;     // secondes
-const deathInterval = 28.6756;     // secondes
+const birthInterval = 13.1877;
+const deathInterval = 28.6756;
 
-// 🧠 temps écoulé
+// 🧠 temps écoulé depuis la base
 function getSecondsElapsed() {
     return (Date.now() - startDate) / 1000;
 }
@@ -60,30 +67,37 @@ function getPopulation() {
     return startPopulation + getBirths() - getDeaths();
 }
 
-// 🎭 affichage
-function update() {
+// 🎭 affichage population
+function updatePopulation() {
     const pop = getPopulation();
 
     document.getElementById("counter").innerText =
         Math.floor(pop).toLocaleString();
 
-    requestAnimationFrame(update);
+    requestAnimationFrame(updatePopulation);
 }
 
-// 🕒 heure locale
+// 🕒 heure UTC+3 FIXE
 function updateTime() {
     const now = new Date();
 
-    const h = now.getHours().toString().padStart(2,'0');
-    const m = now.getMinutes().toString().padStart(2,'0');
-    const s = now.getSeconds().toString().padStart(2,'0');
+    const utc3 = new Date(
+        now.getTime() +
+        now.getTimezoneOffset() * 60000 +
+        3 * 3600000
+    );
+
+    const h = utc3.getHours().toString().padStart(2,'0');
+    const m = utc3.getMinutes().toString().padStart(2,'0');
+    const s = utc3.getSeconds().toString().padStart(2,'0');
 
     document.getElementById("localTime").innerText =
         `Local time: ${h}:${m}:${s}`;
 }
 
+// 🔁 lancement
 setInterval(updateTime, 1000);
-update();
+updatePopulation();
 
 </script>
 
