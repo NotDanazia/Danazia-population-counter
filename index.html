@@ -28,68 +28,109 @@
     </style>
 </head>
 <body>
-    <h1>Danazia Population Live</h1>
 
-    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
+<h1>Danazia Population Live</h1>
 
-    <div id="counter">150,377,148</div>
-    <div id="localTime">Local time: --:--:--</div>
+<img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06">
+
+<div id="counter">150,377,148</div>
+<div id="localTime">Local time: --:--:--</div>
 
 <script>
-    const startValue = 150377148;
+const startValue = 150377148;
+const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
-    // 🎯 croissance GARANTIE
-    const annualGrowthRate = 0.0085;
+// 📊 taux annuels fixes
+const birthRate = 0.0155;  // 15.5‰
+const deathRate = 0.007;   // 7‰
+const growthRate = birthRate - deathRate; // 0.0085
 
-    const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
+let population = startValue;
 
-    // 📊 population réelle (math stable)
-    function getTruePopulation() {
-        const now = Date.now();
-        const years = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+// 📅 gestion annuelle
+let currentYear = new Date().getFullYear();
 
-        return startValue * Math.pow(1 + annualGrowthRate, years);
+// 🔁 paramètres dynamiques (recalculés chaque année)
+let birthInterval = 0;
+let deathInterval = 0;
+
+let lastBirth = Date.now();
+let lastDeath = Date.now();
+
+function recalcYearlyRates() {
+    const now = Date.now();
+    const years = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+
+    // population estimée au début de l'année
+    const estimatedPop = startValue * Math.pow(1 + growthRate, Math.floor(years));
+
+    const secondsPerYear = 365.25 * 24 * 60 * 60;
+
+    const birthsPerYear = estimatedPop * birthRate;
+    const deathsPerYear = estimatedPop * deathRate;
+
+    birthInterval = secondsPerYear / birthsPerYear;
+    deathInterval = secondsPerYear / deathsPerYear;
+}
+
+function checkYearChange() {
+    const year = new Date().getFullYear();
+
+    if (year !== currentYear) {
+        currentYear = year;
+        recalcYearlyRates();
+    }
+}
+
+function simulateEvents() {
+    const now = Date.now();
+
+    // 👶 naissance
+    if (now - lastBirth >= birthInterval * 1000) {
+        population += 1;
+        lastBirth = now;
     }
 
-    // 🎭 bruit visuel contrôlé (aucune dérive possible)
-    function getVisualNoise() {
-        // oscillation douce et stable
-        return Math.sin(Date.now() / 2000) * 900;
+    // ⚰️ décès
+    if (now - lastDeath >= deathInterval * 1000) {
+        population -= 1;
+        lastDeath = now;
     }
+}
 
-    function updateCounter() {
-        const truePop = getTruePopulation();
-        const displayPop = Math.floor(truePop + getVisualNoise());
+function updateCounter() {
+    checkYearChange();
+    simulateEvents();
 
-        document.getElementById("counter").innerText =
-            displayPop.toLocaleString();
+    document.getElementById("counter").innerText =
+        Math.floor(population).toLocaleString();
 
-        requestAnimationFrame(updateCounter);
-    }
+    requestAnimationFrame(updateCounter);
+}
 
-    function updateLocalTime() {
-        const now = new Date();
+// 🕒 heure locale
+function updateLocalTime() {
+    const now = new Date();
 
-        const utc3Time = new Date(
-            now.getTime() +
-            now.getTimezoneOffset() * 60000 +
-            3 * 3600000
-        );
+    const utc3Time = new Date(
+        now.getTime() +
+        now.getTimezoneOffset() * 60000 +
+        3 * 3600000
+    );
 
-        const h = utc3Time.getHours().toString().padStart(2, '0');
-        const m = utc3Time.getMinutes().toString().padStart(2, '0');
-        const s = utc3Time.getSeconds().toString().padStart(2, '0');
+    const h = utc3Time.getHours().toString().padStart(2,'0');
+    const m = utc3Time.getMinutes().toString().padStart(2,'0');
+    const s = utc3Time.getSeconds().toString().padStart(2,'0');
 
-        document.getElementById("localTime").innerText =
-            `Local time: ${h}:${m}:${s}`;
-    }
+    document.getElementById("localTime").innerText =
+        `Local time: ${h}:${m}:${s}`;
+}
 
-    function init() {
-        updateCounter();
-        setInterval(updateLocalTime, 1000);
-    }
+// 🔥 initialisation
+recalcYearlyRates();
+setInterval(updateLocalTime, 1000);
+updateCounter();
 
-    init();
 </script>
 
 </body>
