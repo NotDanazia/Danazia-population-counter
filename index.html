@@ -29,63 +29,73 @@
 </head>
 <body>
     <h1>Danazia Population Live</h1>
-    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
+
+    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06">
 
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
 
-    <script>
-        const startValue = 150377148;
-        const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
+<script>
+    const startValue = 150377148;
 
-        const annualGrowthRate = 0.0085; // 0.85% croissance nette
+    // 🎯 croissance FIXE garantie
+    const annualGrowthRate = 0.0085;
 
-        let lastRandomFactor = 1;
-        let lastUpdate = 0;
+    const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
-        function calculateCurrentValue() {
-            const now = Date.now();
-            const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
+    // 🧠 population réelle (math parfaite)
+    function getTruePopulation() {
+        const now = Date.now();
+        const years = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
 
-            const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
+        return startValue * Math.pow(1 + annualGrowthRate, years);
+    }
 
-            // variations démographiques réalistes (lissées)
-            if (now - lastUpdate > 2000) {
-                lastRandomFactor = 1 + (Math.random() - 0.5) * 0.0004;
-                lastUpdate = now;
-            }
+    // 🎲 bruit VISUEL uniquement (ne modifie PAS la réalité)
+    let visualNoise = 0;
 
-            return Math.floor(startValue * growthFactor * lastRandomFactor);
-        }
+    function updateVisualNoise() {
+        // petit bruit contrôlé
+        visualNoise = (Math.random() - 0.5) * 2000; 
+    }
 
-        function formatNumberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
+    setInterval(updateVisualNoise, 2000);
 
-        function updateCounter() {
-            const currentValue = calculateCurrentValue();
-            document.getElementById("counter").innerText = formatNumberWithCommas(currentValue);
-            requestAnimationFrame(updateCounter);
-        }
+    function updateCounter() {
+        const truePop = getTruePopulation();
 
-        function updateLocalTime() {
-            const now = new Date();
-            const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
+        // affichage légèrement vivant
+        const displayPop = Math.floor(truePop + visualNoise);
 
-            const hours = utc3Time.getHours().toString().padStart(2, '0');
-            const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
-            const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
+        document.getElementById("counter").innerText =
+            displayPop.toLocaleString();
 
-            document.getElementById("localTime").innerText =
-                `Local time: ${hours}:${minutes}:${seconds}`;
-        }
+        requestAnimationFrame(updateCounter);
+    }
 
-        function initializeCounter() {
-            updateCounter();
-            setInterval(updateLocalTime, 1000);
-        }
+    function updateLocalTime() {
+        const now = new Date();
+        const utc3Time = new Date(
+            now.getTime() +
+            now.getTimezoneOffset() * 60000 +
+            3 * 3600000
+        );
 
-        initializeCounter();
-    </script>
+        const h = utc3Time.getHours().toString().padStart(2, '0');
+        const m = utc3Time.getMinutes().toString().padStart(2, '0');
+        const s = utc3Time.getSeconds().toString().padStart(2, '0');
+
+        document.getElementById("localTime").innerText =
+            `Local time: ${h}:${m}:${s}`;
+    }
+
+    function init() {
+        updateCounter();
+        setInterval(updateLocalTime, 1000);
+    }
+
+    init();
+</script>
+
 </body>
 </html>
