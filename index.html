@@ -25,6 +25,11 @@
             color: #555;
             margin-top: 20px;
         }
+        #stats {
+            margin-top: 10px;
+            color: #333;
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
@@ -34,49 +39,67 @@
 <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06">
 
 <div id="counter">150,377,148</div>
+<div id="stats"></div>
 <div id="localTime">Local time: --:--:--</div>
 
 <script>
+
 const startValue = 150377148;
 
-// 🎯 croissance FIXE garantie
-const annualGrowthRate = 0.0085;
-
-// 📅 date de référence (NE CHANGE JAMAIS)
+// 📅 base fixe (NE CHANGE PAS)
 const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
+
+// 🎯 taux annuels fixes
+const birthRate = 0.0155; // 15.5‰
+const deathRate = 0.007;  // 7‰
+const growthRate = birthRate - deathRate; // 0.0085
 
 const secondsPerYear = 365.25 * 24 * 60 * 60;
 
-// 🧠 population calculée DIRECTEMENT depuis le temps
-function getTruePopulation() {
+// 🧠 population théorique stable (source UNIQUE de vérité)
+function getBasePopulation() {
     const now = Date.now();
     const years = (now - startDate) / (1000 * secondsPerYear);
 
-    return startValue * Math.pow(1 + annualGrowthRate, years);
+    return startValue * Math.pow(1 + growthRate, years);
 }
 
-// 🎭 petit effet visuel (ne modifie PAS la réalité)
-let noise = 0;
-
-function updateNoise() {
-    noise = Math.sin(Date.now() / 2000) * 800;
+// 👶 décès et naissances "théoriques" depuis le début (cohérent)
+function getBirths() {
+    const pop = getBasePopulation();
+    return Math.floor(pop * birthRate);
 }
 
-setInterval(updateNoise, 1000);
+function getDeaths() {
+    const pop = getBasePopulation();
+    return Math.floor(pop * deathRate);
+}
 
-// 📊 affichage
-function updateCounter() {
-    const base = getTruePopulation();
-    const display = Math.floor(base + noise);
+// 🎭 petit effet visuel (ne modifie rien)
+function getNoise() {
+    return Math.sin(Date.now() / 2000) * 700;
+}
+
+// 📊 affichage principal
+function update() {
+    const base = getBasePopulation();
+
+    const display = Math.floor(base + getNoise());
 
     document.getElementById("counter").innerText =
         display.toLocaleString();
 
-    requestAnimationFrame(updateCounter);
+    const births = getBirths();
+    const deaths = getDeaths();
+
+    document.getElementById("stats").innerText =
+        `Naissances/an: ~${births.toLocaleString()} | Décès/an: ~${deaths.toLocaleString()}`;
+
+    requestAnimationFrame(update);
 }
 
-// 🕒 heure locale (UTC+3)
-function updateLocalTime() {
+// 🕒 heure locale UTC+3
+function updateTime() {
     const now = new Date();
 
     const utc3 = new Date(
@@ -85,16 +108,16 @@ function updateLocalTime() {
         3 * 3600000
     );
 
-    const h = utc3.getHours().toString().padStart(2, '0');
-    const m = utc3.getMinutes().toString().padStart(2, '0');
-    const s = utc3.getSeconds().toString().padStart(2, '0');
+    const h = utc3.getHours().toString().padStart(2,'0');
+    const m = utc3.getMinutes().toString().padStart(2,'0');
+    const s = utc3.getSeconds().toString().padStart(2,'0');
 
     document.getElementById("localTime").innerText =
         `Local time: ${h}:${m}:${s}`;
 }
 
-setInterval(updateLocalTime, 1000);
-updateCounter();
+setInterval(updateTime, 1000);
+update();
 
 </script>
 
