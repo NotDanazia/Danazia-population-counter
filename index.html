@@ -30,19 +30,32 @@
 <body>
     <h1>Danazia Population Live</h1>
     <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
+
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
 
     <script>
         const startValue = 150377148;
-        const annualGrowthRate = 0.02; // 2 % de croissance
         const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
+        const annualGrowthRate = 0.0085; // 0.85% croissance nette
+
+        let lastRandomFactor = 1;
+        let lastUpdate = 0;
+
         function calculateCurrentValue() {
-            const now = new Date().getTime();
+            const now = Date.now();
             const daysElapsed = (now - startDate) / (1000 * 60 * 60 * 24);
+
             const growthFactor = Math.pow((1 + annualGrowthRate), daysElapsed / 365.25);
-            return Math.floor(startValue * growthFactor);
+
+            // variations démographiques réalistes (lissées)
+            if (now - lastUpdate > 2000) {
+                lastRandomFactor = 1 + (Math.random() - 0.5) * 0.0004;
+                lastUpdate = now;
+            }
+
+            return Math.floor(startValue * growthFactor * lastRandomFactor);
         }
 
         function formatNumberWithCommas(number) {
@@ -51,18 +64,20 @@
 
         function updateCounter() {
             const currentValue = calculateCurrentValue();
-            const formattedValue = formatNumberWithCommas(currentValue);
-            document.getElementById("counter").innerText = formattedValue;
+            document.getElementById("counter").innerText = formatNumberWithCommas(currentValue);
             requestAnimationFrame(updateCounter);
         }
 
         function updateLocalTime() {
             const now = new Date();
             const utc3Time = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3 * 3600000));
+
             const hours = utc3Time.getHours().toString().padStart(2, '0');
             const minutes = utc3Time.getMinutes().toString().padStart(2, '0');
             const seconds = utc3Time.getSeconds().toString().padStart(2, '0');
-            document.getElementById("localTime").innerText = `Local time: ${hours}:${minutes}:${seconds}`;
+
+            document.getElementById("localTime").innerText =
+                `Local time: ${hours}:${minutes}:${seconds}`;
         }
 
         function initializeCounter() {
