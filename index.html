@@ -38,96 +38,61 @@
 
 <script>
 const startValue = 150377148;
+
+// 🎯 croissance FIXE garantie
+const annualGrowthRate = 0.0085;
+
+// 📅 date de référence (NE CHANGE JAMAIS)
 const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
-// 📊 taux annuels fixes
-const birthRate = 0.0155;  // 15.5‰
-const deathRate = 0.007;   // 7‰
-const growthRate = birthRate - deathRate; // 0.0085
+const secondsPerYear = 365.25 * 24 * 60 * 60;
 
-let population = startValue;
-
-// 📅 gestion annuelle
-let currentYear = new Date().getFullYear();
-
-// 🔁 paramètres dynamiques (recalculés chaque année)
-let birthInterval = 0;
-let deathInterval = 0;
-
-let lastBirth = Date.now();
-let lastDeath = Date.now();
-
-function recalcYearlyRates() {
+// 🧠 population calculée DIRECTEMENT depuis le temps
+function getTruePopulation() {
     const now = Date.now();
-    const years = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
+    const years = (now - startDate) / (1000 * secondsPerYear);
 
-    // population estimée au début de l'année
-    const estimatedPop = startValue * Math.pow(1 + growthRate, Math.floor(years));
-
-    const secondsPerYear = 365.25 * 24 * 60 * 60;
-
-    const birthsPerYear = estimatedPop * birthRate;
-    const deathsPerYear = estimatedPop * deathRate;
-
-    birthInterval = secondsPerYear / birthsPerYear;
-    deathInterval = secondsPerYear / deathsPerYear;
+    return startValue * Math.pow(1 + annualGrowthRate, years);
 }
 
-function checkYearChange() {
-    const year = new Date().getFullYear();
+// 🎭 petit effet visuel (ne modifie PAS la réalité)
+let noise = 0;
 
-    if (year !== currentYear) {
-        currentYear = year;
-        recalcYearlyRates();
-    }
+function updateNoise() {
+    noise = Math.sin(Date.now() / 2000) * 800;
 }
 
-function simulateEvents() {
-    const now = Date.now();
+setInterval(updateNoise, 1000);
 
-    // 👶 naissance
-    if (now - lastBirth >= birthInterval * 1000) {
-        population += 1;
-        lastBirth = now;
-    }
-
-    // ⚰️ décès
-    if (now - lastDeath >= deathInterval * 1000) {
-        population -= 1;
-        lastDeath = now;
-    }
-}
-
+// 📊 affichage
 function updateCounter() {
-    checkYearChange();
-    simulateEvents();
+    const base = getTruePopulation();
+    const display = Math.floor(base + noise);
 
     document.getElementById("counter").innerText =
-        Math.floor(population).toLocaleString();
+        display.toLocaleString();
 
     requestAnimationFrame(updateCounter);
 }
 
-// 🕒 heure locale
+// 🕒 heure locale (UTC+3)
 function updateLocalTime() {
     const now = new Date();
 
-    const utc3Time = new Date(
+    const utc3 = new Date(
         now.getTime() +
         now.getTimezoneOffset() * 60000 +
         3 * 3600000
     );
 
-    const h = utc3Time.getHours().toString().padStart(2,'0');
-    const m = utc3Time.getMinutes().toString().padStart(2,'0');
-    const s = utc3Time.getSeconds().toString().padStart(2,'0');
+    const h = utc3.getHours().toString().padStart(2, '0');
+    const m = utc3.getMinutes().toString().padStart(2, '0');
+    const s = utc3.getSeconds().toString().padStart(2, '0');
 
     document.getElementById("localTime").innerText =
         `Local time: ${h}:${m}:${s}`;
 }
 
-// 🔥 initialisation
-recalcYearlyRates();
 setInterval(updateLocalTime, 1000);
 updateCounter();
 
