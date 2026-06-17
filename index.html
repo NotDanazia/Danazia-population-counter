@@ -30,7 +30,7 @@
 <body>
     <h1>Danazia Population Live</h1>
 
-    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06">
+    <img src="https://3ba8d8ca06.cbaul-cdnwnd.com/ad31ff7aa5568419f0bcf71e9af28d64/200000003-acfe8acfea/drapeau%20Danazie.webp?ph=3ba8d8ca06" alt="Drapeau de Danazia">
 
     <div id="counter">150,377,148</div>
     <div id="localTime">Local time: --:--:--</div>
@@ -38,12 +38,12 @@
 <script>
     const startValue = 150377148;
 
-    // 🎯 croissance FIXE garantie
+    // 🎯 croissance GARANTIE
     const annualGrowthRate = 0.0085;
 
     const startDate = new Date("2024-10-16T00:00:00-05:00").getTime();
 
-    // 🧠 population réelle (math parfaite)
+    // 📊 population réelle (math stable)
     function getTruePopulation() {
         const now = Date.now();
         const years = (now - startDate) / (1000 * 60 * 60 * 24 * 365.25);
@@ -51,21 +51,15 @@
         return startValue * Math.pow(1 + annualGrowthRate, years);
     }
 
-    // 🎲 bruit VISUEL uniquement (ne modifie PAS la réalité)
-    let visualNoise = 0;
-
-    function updateVisualNoise() {
-        // petit bruit contrôlé
-        visualNoise = (Math.random() - 0.5) * 2000; 
+    // 🎭 bruit visuel contrôlé (aucune dérive possible)
+    function getVisualNoise() {
+        // oscillation douce et stable
+        return Math.sin(Date.now() / 2000) * 900;
     }
-
-    setInterval(updateVisualNoise, 2000);
 
     function updateCounter() {
         const truePop = getTruePopulation();
-
-        // affichage légèrement vivant
-        const displayPop = Math.floor(truePop + visualNoise);
+        const displayPop = Math.floor(truePop + getVisualNoise());
 
         document.getElementById("counter").innerText =
             displayPop.toLocaleString();
@@ -75,6 +69,7 @@
 
     function updateLocalTime() {
         const now = new Date();
+
         const utc3Time = new Date(
             now.getTime() +
             now.getTimezoneOffset() * 60000 +
